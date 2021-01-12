@@ -61,7 +61,7 @@ RUN mkdir -p /root/.local/share/applications/ \
   && mkdir /srv/mss
 
 # Install Mission Support System Software
-RUN conda create -n mssenv mss -y
+RUN conda create -n mssenv mss=2.0.0=py38h578d9bd_1 -y
 
 # path for data and mss_wms_settings config
 ENV PYTHONPATH="/srv/mss:/root/mss"
