@@ -63,9 +63,6 @@ RUN mkdir -p /root/.local/share/applications/ \
 # Install Mission Support System Software
 RUN conda create -n mssenv mss -y
 
-# needed to fix "libgcc_s.so.1 must be installed for pthread_cancel to work"
-ENV LDFLAGS='-lpthread'
-
 # path for data and mss_wms_settings config
 ENV PYTHONPATH="/srv/mss:/root/mss"
 ENV PROJ_LIB="/opt/conda/envs/mssenv/share/proj"
