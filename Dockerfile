@@ -33,6 +33,11 @@
 # Set the base image debian with miniconda
 FROM continuumio/miniconda3
 
+WORKDIR /app
+
+# Make RUN commands use `bash --login`:
+SHELL ["/bin/bash", "--login", "-c"]
+
 MAINTAINER Reimar Bauer <rb.proj@gmail.com>
 
 # install packages for qt X
@@ -60,8 +65,16 @@ RUN mkdir -p /root/.local/share/applications/ \
   && mkdir -p /root/.local/share/icons/hicolor/48x48/apps/ \
   && mkdir /srv/mss
 
-# Install Mission Support System Software
-RUN conda create -n mssenv mss=2.0.0=py38h578d9bd_1 -y
+# install conda-build
+RUN conda install conda-build mamba -y
+
+# ToDo localbuild needs to be fetched from mss branch develop 
+RUN mkdir /localbuild 
+COPY /localbuild/* /localbuild/
+
+RUN conda build /localbuild 
+# ToDo make an installation 
+# RUN mamba install -n mssenv --use-local mss
 
 # path for data and mss_wms_settings config
 ENV PYTHONPATH="/srv/mss:/root/mss"
