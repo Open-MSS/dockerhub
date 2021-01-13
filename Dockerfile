@@ -3,28 +3,28 @@
 # Based on miniconda3 Image
 # docker image build -t mss:latest .
 # docker container run --net=host --name mswms mss:latest /opt/conda/envs/mssenv/bin/mswms --port 80
-# docker container run --net=host --name mscolab mss:latest /opt/conda/envs/mssenv/bin/mscolab
+# docker container run --net=host --name mscolab mss:latest /opt/conda/envs/mssenv/bin/mscolab start
 # xhost +local:docker
 # docker container run -d --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix \
-# --name mss missionsupportsystem:latest /opt/conda/envs/mssenv/bin/mss
+# --name mss mss:latest /opt/conda/envs/mssenv/bin/mss
 # docker exec replace_by_container /bin/sh -c "/scripts/script.sh"
 #
 # --- Read Capabilities ---
 # curl "http://localhost/?service=WMS&request=GetCapabilities&version=1.1.1"
 # --- Verify Mscolab ---
-# curl "http://localhost:8083"
+# curl "http://localhost:8083/status"
 #
 # docker ps
 # CONTAINER ID        IMAGE          COMMAND                  CREATED             STATUS          NAMES
-# 8c3ee656736e        mss:latest     "/opt/conda/envs/mss…"   45 seconds ago      Up 43 seconds   mss
-# b1f1ea480ebc        mss:latest     "/opt/conda/envs/mss…"    4 minutes ago      Up 4 minutes    mscolab
-# 1fecac3fd2d7        mss:latest     "/opt/conda/envs/mss…"   5 minutes ago       Up 5 minutes    mswms
+# 8c3ee656736e        mss:2.0.0     "/opt/conda/envs/mss…"   45 seconds ago      Up 43 seconds   mss
+# b1f1ea480ebc        mss:2.0.0     "/opt/conda/envs/mss…"    4 minutes ago      Up 4 minutes    mscolab
+# 1fecac3fd2d7        mss:2.0.0     "/opt/conda/envs/mss…"   5 minutes ago       Up 5 minutes    mswms
 #
 # --- from the dockerhub ---
 # For the mss ui:
 # xhost +local:docker
 # docker run -d --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix \
-# dreimark/mss:latest /opt/conda/envs/mssenv/bin/mss
+# yourmss/mss:2.0.0 /opt/conda/envs/mssenv/bin/mss
 #
 #
 ##################################################################################
