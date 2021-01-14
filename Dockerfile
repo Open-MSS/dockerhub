@@ -2,11 +2,14 @@
 # Dockerfile to run Memcached Containers
 # Based on miniconda3 Image
 # docker image build -t mss:latest .
-# docker container run --net=host --name mswms mss:latest /opt/conda/envs/mssenv/bin/mswms --port 80
-# docker container run --net=host --name mscolab mss:latest /opt/conda/envs/mssenv/bin/mscolab start
+# docker container run --net=host --name mswms mss:latest mswms --port 80
+# docker container run --net=host --name mscolab mss:latest mscolab start
+# docker run  --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix s1:latest bash
 # xhost +local:docker
 # docker container run -d --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix \
-# --name mss mss:latest /opt/conda/envs/mssenv/bin/mss
+# --name mss mss:latest mss
+# runs mswms with demodata, mscolab and the msui
+# docker run   --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix s1:latest MSS
 # docker exec replace_by_container /bin/sh -c "/scripts/script.sh"
 #
 # --- Read Capabilities ---
@@ -24,7 +27,7 @@
 # For the mss ui:
 # xhost +local:docker
 # docker run -d --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix \
-# yourmss/mss:2.0.0 /opt/conda/envs/mssenv/bin/mss
+# yourmss/mss:2.0.0 mss
 #
 #
 ##################################################################################
@@ -62,6 +65,7 @@ RUN mkdir -p /root/.local/share/applications/ \
 
 # Install Mission Support System Software
 RUN conda create -n mssenv mss=2.0.0=py38h578d9bd_1 -y
+ENV PATH=/opt/conda/envs/mssenv/bin:$PATH
 
 # path for data and mss_wms_settings config
 ENV PYTHONPATH="/srv/mss:/root/mss"
@@ -75,6 +79,7 @@ RUN mkdir -p /scripts
 COPY script.sh /scripts
 WORKDIR /scripts
 RUN chmod +x script.sh
-RUN /scripts/script.sh
+
+ENTRYPOINT ["bash", "/scripts/script.sh"]
 
 EXPOSE 8081 8083
