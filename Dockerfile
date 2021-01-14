@@ -66,7 +66,7 @@ RUN mkdir -p /root/.local/share/applications/ \
   && mkdir /srv/mss
 
 # install conda-build
-RUN conda install conda-build mamba -y
+RUN conda install conda-build -y
 
 # fetch localbuild from mss branch develop, and replace source from meta.yaml to reference github
 RUN wget https://github.com/Open-MSS/MSS/archive/develop.tar.gz \
