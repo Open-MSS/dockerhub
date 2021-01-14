@@ -1,19 +1,19 @@
 ##################################################################################
 # Dockerfile to run Memcached Containers
 # Based on miniconda3 Image
-# docker image build -t mss:latest .
-# docker container run --net=host --name mswms mss:latest mswms --port 80
-# docker container run --net=host --name mscolab mss:latest mscolab start
-# docker run  --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix s1:latest bash
+# docker image build -t yourmss/mss:x.y.z .
+# docker container run --net=host --name mswms yourmss/mss:2.0.0 mswms --port 80
+# docker container run --net=host --name mscolab yourmss/mss:2.0.0 mscolab start
+# docker run  --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix yourmss/mss:2.0.0 bash
 # xhost +local:docker
 # docker container run -d --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix \
-# --name mss mss:latest mss
+# --name mss yourmss/mss:2.0.0 mss
 # runs mswms with demodata, mscolab and the msui
-# docker run   --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix s1:latest MSS
+# docker run   --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix yourmss/mss:2.0.0 MSS
 # docker exec replace_by_container /bin/sh -c "/scripts/script.sh"
 #
 # --- Read Capabilities ---
-# curl "http://localhost/?service=WMS&request=GetCapabilities&version=1.1.1"
+# curl "http://localhost:8081/?service=WMS&request=GetCapabilities&version=1.1.1"
 # --- Verify Mscolab ---
 # curl "http://localhost:8083/status"
 #
