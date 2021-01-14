@@ -66,7 +66,7 @@ RUN mkdir -p /root/.local/share/applications/ \
   && mkdir /srv/mss
 
 # install conda-build
-RUN conda install conda-build mamba -y
+RUN conda install conda-build -y
 
 # fetch localbuild from mss branch develop, and replace source from meta.yaml to reference github
 RUN wget https://github.com/Open-MSS/MSS/archive/develop.tar.gz \
@@ -77,9 +77,10 @@ RUN wget https://github.com/Open-MSS/MSS/archive/develop.tar.gz \
 
 RUN conda build /localbuild
 
-# Install local mss build
-RUN conda create -n mssenv python=3 \
-  && mamba install -y -n mssenv --use-local mss
+# Install local mss build, and remove unnecessary things
+RUN conda create -n mssenv mss=alpha --use-local \
+  && conda build purge-all \
+  && conda clean --all
 
 # path for data and mss_wms_settings config
 ENV PYTHONPATH="/srv/mss:/root/mss"
