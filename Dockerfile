@@ -1,39 +1,8 @@
-##################################################################################
-# Dockerfile to run Memcached Containers
-# Based on miniconda3 Image
-# docker image build -t mss:latest .
-# docker container run --net=host --name mswms mss:latest /opt/conda/envs/mssenv/bin/mswms --port 80
-# docker container run --net=host --name mscolab mss:latest /opt/conda/envs/mssenv/bin/mscolab start
-# xhost +local:docker
-# docker container run -d --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix \
-# --name mss mss:latest /opt/conda/envs/mssenv/bin/mss
-# docker exec replace_by_container /bin/sh -c "/scripts/script.sh"
-#
-# --- Read Capabilities ---
-# curl "http://localhost/?service=WMS&request=GetCapabilities&version=1.1.1"
-# --- Verify Mscolab ---
-# curl "http://localhost:8083/status"
-#
-# docker ps
-# CONTAINER ID        IMAGE          COMMAND                  CREATED             STATUS          NAMES
-# 8c3ee656736e        mss:2.0.0     "/opt/conda/envs/mss…"   45 seconds ago      Up 43 seconds   mss
-# b1f1ea480ebc        mss:2.0.0     "/opt/conda/envs/mss…"    4 minutes ago      Up 4 minutes    mscolab
-# 1fecac3fd2d7        mss:2.0.0     "/opt/conda/envs/mss…"   5 minutes ago       Up 5 minutes    mswms
-#
-# --- from the dockerhub ---
-# For the mss ui:
-# xhost +local:docker
-# docker run -d --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix \
-# yourmss/mss:2.0.0 /opt/conda/envs/mssenv/bin/mss
-#
-#
-##################################################################################
-
-
 # Set the base image debian with miniconda
 FROM continuumio/miniconda3
 
-WORKDIR /app
+# Sets which branch to fetch requirements from
+ARG BRANCH=develop
 
 # Make RUN commands use `bash --login`:
 SHELL ["/bin/bash", "--login", "-c"]
@@ -45,56 +14,31 @@ RUN apt-get --yes update && apt-get --yes upgrade && apt-get --yes install \
   libgl1-mesa-glx \
   libx11-xcb1 \
   libxi6 \
-  xfonts-scalable
+  xfonts-scalable \
+  xvfb
 
-# get keyboard working for mss gui
-RUN apt-get --yes update && DEBIAN_FRONTEND=noninteractive \
-  apt-get --yes install xserver-xorg-video-dummy \
-  && apt-get --yes upgrade \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
+# update git to latest version, and install xvfb
+RUN echo "deb http://ftp.us.debian.org/debian testing main contrib non-free" >> /etc/apt/sources.list \
+  && apt-get update \
+  && apt-get install -y git \
+  && apt-get install -y xvfb \
+  && apt-get clean all
 
 # Set up conda-forge channel
 RUN conda config --add channels conda-forge && conda config --add channels defaults &&\
   conda update -n base -c defaults conda
 
+# Create environment
+RUN conda create -n mssenv python=3
 
-# create some desktop user directories
-# if there is no data attached e.g. demodata /srv/mss is the preferred dir
-RUN mkdir -p /root/.local/share/applications/ \
-  && mkdir -p /root/.local/share/icons/hicolor/48x48/apps/ \
-  && mkdir /srv/mss
-
-# install conda-build
-RUN conda install conda-build -y
-
-# fetch localbuild from mss branch develop, and replace source from meta.yaml to reference github
-RUN wget https://github.com/Open-MSS/MSS/archive/develop.tar.gz \
-  && mkdir /localbuild \
-  && tar -C /localbuild --strip-components=2 -xvf develop.tar.gz MSS-develop/localbuild \
-  && sed -i "s@path: ../@git_url: https://github.com/Open-MSS/MSS.git\n  git_tag: develop@" /localbuild/meta.yaml \
-  && rm develop.tar.gz
-
-RUN cat /localbuild/meta.yaml
-RUN conda build /localbuild
-
-# Install local mss build, and remove unnecessary things
-RUN conda create -n mssenv mss=alpha --use-local \
-  && conda build purge-all \
-  && conda clean --all
-
-# path for data and mss_wms_settings config
-ENV PYTHONPATH="/srv/mss:/root/mss"
-ENV PROJ_LIB="/opt/conda/envs/mssenv/share/proj"
-
-# In the script is an initialisation of demodata and
-# the mswms and mscolab server is started
-# server based on demodata until you mount a data volume on /srv/mss
-# also you can replace the data in the demodata dir /root/mss.
-RUN mkdir -p /scripts
-COPY script.sh /scripts
-WORKDIR /scripts
-RUN chmod +x script.sh
-RUN /scripts/script.sh
-
-EXPOSE 8081 8083
+# Install requirements, fetched from the specified branch
+RUN wget -O- -q https://raw.githubusercontent.com/Open-MSS/MSS/${BRANCH}/localbuild/meta.yaml \
+   | sed -n '/^requirements:/,/^test:/p' \
+   | sed -e "s/.*- //" \
+   | sed -e "s/menuinst.*//" \
+   | sed -e "s/.*://" > reqs.txt \
+  && conda install -n mssenv --file reqs.txt \
+  && conda install -n mssenv --file https://raw.githubusercontent.com/Open-MSS/MSS/${BRANCH}/requirements.d/development.txt \
+  && conda install -n mssenv pyvirtualdisplay \
+  && conda clean --all \
+  && rm reqs.txt
