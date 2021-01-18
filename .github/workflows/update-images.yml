@@ -1,0 +1,33 @@
+name: Update all images
+
+on: 
+  workflow_dispatch:
+  # Runs every day at 6AM UTC
+  schedule:
+    - cron: '0 6 * * *'
+  
+jobs:
+  trigger_dispatch:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Invoke stable workflow
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Update image
+          ref: stable
+          token: ${{ secrets.PAT }}
+      
+      - name: Invoke develop workflow
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Update image
+          ref: develop
+          token: ${{ secrets.PAT }}
+          
+      - name: Invoke testing workflow
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Update image
+          ref: testing
+          token: ${{ secrets.PAT }}
