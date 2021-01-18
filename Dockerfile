@@ -14,8 +14,7 @@ RUN apt-get --yes update && apt-get --yes upgrade && apt-get --yes install \
   libgl1-mesa-glx \
   libx11-xcb1 \
   libxi6 \
-  xfonts-scalable \
-  xvfb
+  xfonts-scalable
 
 # update git to latest version, and install xvfb
 RUN echo "deb http://ftp.us.debian.org/debian testing main contrib non-free" >> /etc/apt/sources.list \
