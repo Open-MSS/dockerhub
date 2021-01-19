@@ -6,7 +6,7 @@ on:
 
 env:
   IMAGE_NAME: mss-test
-  IMAGE_PATH: marilyth
+  IMAGE_PATH: ${{ secrets.DOCKERHUB_ACCOUNT }}
   
 jobs:     
   test-and-publish:
