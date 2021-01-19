@@ -1,0 +1,39 @@
+name: Update image
+
+on: 
+ push: 
+ workflow_dispatch:
+
+env:
+  IMAGE_PATH: marilyth
+  IMAGE_NAME: mss-dev
+
+jobs:
+  test-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        
+      - name: Build image
+        run: docker build . --tag $IMAGE_PATH/$IMAGE_NAME:latest
+        
+      - name: Test image
+        run: |
+          docker run $IMAGE_PATH/$IMAGE_NAME:latest /bin/bash -c "
+          git clone https://github.com/Open-MSS/MSS.git &&
+          cd MSS &&
+          git checkout develop &&
+          source /opt/conda/bin/activate mssenv &&
+          conda install --file requirements.d/development.txt &&
+          apt-get update &&
+          apt-get install xvfb -y &&
+          conda install pyvirtualdisplay &&
+          [ -d "~/.cache/matplotlib" ] && rm -r ~/.cache/matplotlib/ ;
+          pytest mslib"
+
+      - name: Log into dockerhub
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_ACCOUNT }} --password-stdin
+
+      - name: Push image
+        run: docker push $IMAGE_PATH/$IMAGE_NAME:latest
