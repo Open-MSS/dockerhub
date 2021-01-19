@@ -68,17 +68,14 @@ RUN mkdir -p /root/.local/share/applications/ \
 # install conda-build
 RUN conda install conda-build -y
 
-# fetch localbuild from mss branch develop, and replace source from meta.yaml to reference github
+# fetch localbuild from mss branch develop, build and install mss, cleanup
 RUN wget https://github.com/Open-MSS/MSS/archive/develop.tar.gz \
   && mkdir /localbuild \
   && tar -C /localbuild --strip-components=2 -xvf develop.tar.gz MSS-develop/localbuild \
   && sed -i "s@path: ../@git_url: https://github.com/Open-MSS/MSS.git\n  git_tag: develop@" /localbuild/meta.yaml \
-  && rm develop.tar.gz
-
-RUN conda build /localbuild
-
-# Install local mss build, and remove unnecessary things
-RUN conda create -n mssenv mss=alpha --use-local \
+  && rm develop.tar.gz \
+  && conda build /localbuild \
+  && conda create -n mssenv mss=alpha --use-local \
   && conda build purge-all \
   && conda clean --all
 
