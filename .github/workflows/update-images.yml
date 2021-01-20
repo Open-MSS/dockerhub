@@ -12,21 +12,21 @@ jobs:
     
     steps:
       - name: Invoke stable workflow
-        uses: benc-uk/workflow-dispatch@v1
+        uses: benc-uk/workflow-dispatch@827565b908f387ffd483c84312273ae185c06c8a
         with:
           workflow: Update image
           ref: stable
           token: ${{ secrets.PAT }}
       
       - name: Invoke develop workflow
-        uses: benc-uk/workflow-dispatch@v1
+        uses: benc-uk/workflow-dispatch@827565b908f387ffd483c84312273ae185c06c8a
         with:
           workflow: Update image
           ref: develop
           token: ${{ secrets.PAT }}
           
       - name: Invoke testing workflow
-        uses: benc-uk/workflow-dispatch@v1
+        uses: benc-uk/workflow-dispatch@827565b908f387ffd483c84312273ae185c06c8a
         with:
           workflow: Update image
           ref: testing
