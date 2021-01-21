@@ -1,7 +1,21 @@
-#!/bin/sh
+#!/bin/bash
 
-/opt/conda/envs/mssenv/bin/mswms_demodata
-/opt/conda/envs/mssenv/bin/mscolab_demodata --init
+set -e
 
-/opt/conda/envs/mssenv/bin/mswms --port 8081  &
-/opt/conda/envs/mssenv/bin/mscolab &
+
+if [ "$1" = 'MSS' ]; then
+
+    echo "initialize demodata and start services"
+    echo ""
+    mswms_demodata --create
+    mswms --port 8081  &
+    sleep 3
+    mscolab db --init
+    sleep 3
+    mscolab start &
+    sleep 3
+    mss
+
+fi
+
+exec "$@"
