@@ -31,7 +31,8 @@ RUN conda config --add channels conda-forge && conda config --add channels defau
 RUN conda create -n mssenv python=3
 
 # Install requirements, fetched from the specified branch
-RUN wget -O- -q https://raw.githubusercontent.com/Open-MSS/MSS/${BRANCH}/localbuild/meta.yaml \
+RUN wget -O /meta.yaml -q https://raw.githubusercontent.com/Open-MSS/MSS/${BRANCH}/localbuild/meta.yaml \
+  && cat /meta.yaml \
    | sed -n '/^requirements:/,/^test:/p' \
    | sed -e "s/.*- //" \
    | sed -e "s/menuinst.*//" \
