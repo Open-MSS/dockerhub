@@ -7,7 +7,7 @@ if [ "$1" = 'MSS' ]; then
 
     echo "initialize demodata and start services"
     echo ""
-    mswms_demodata --create
+    mswms_demodata --seed
     mswms --port 8081  &
     sleep 3
     mscolab db --init
