@@ -1,4 +1,4 @@
-name: Update image
+name: Update Image
 
 on: 
  push: 
@@ -9,7 +9,7 @@ env:
   IMAGE_NAME: mss
 
 jobs:
-  test-and-publish:
+  test-and-publish-stable:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,18 +19,27 @@ jobs:
         run: docker build . --tag $IMAGE_PATH/$IMAGE_NAME:latest
         
       - name: Test image
+        timeout-minutes: 25
         run: |
           docker run $IMAGE_PATH/$IMAGE_NAME:latest /bin/bash -c "
           git clone https://github.com/Open-MSS/MSS.git &&
           cd MSS &&
           git checkout stable &&
           source /opt/conda/bin/activate mssenv &&
-          conda install --file requirements.d/development.txt &&
+          mamba install --file requirements.d/development.txt &&
           apt-get update &&
           apt-get install xvfb -y &&
-          conda install pyvirtualdisplay &&
+          mamba install pyvirtualdisplay &&
           [ -d "~/.cache/matplotlib" ] && rm -r ~/.cache/matplotlib/ ;
           pytest mslib"
+          
+      - name: Print conda list
+        if: ${{ always() }}
+        run: |
+          docker run $IMAGE_PATH/$IMAGE_NAME:latest /bin/bash -c "
+          source /opt/conda/bin/activate mssenv &&
+          conda list
+          "
 
       - name: Log into dockerhub
         run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_ACCOUNT }} --password-stdin
