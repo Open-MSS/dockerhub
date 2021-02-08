@@ -28,17 +28,20 @@ RUN conda config --add channels conda-forge && conda config --add channels defau
   conda update -n base -c defaults conda
 
 # Create environment
-RUN conda create -n mssenv python=3
+RUN conda create -n mssenv python=3 \
+  && conda init bash
 
 # Install requirements, fetched from the specified branch
-RUN wget -O /meta.yaml -q https://raw.githubusercontent.com/Open-MSS/MSS/${BRANCH}/localbuild/meta.yaml \
+RUN conda activate mssenv \
+  && wget -O /meta.yaml -q https://raw.githubusercontent.com/Open-MSS/MSS/${BRANCH}/localbuild/meta.yaml \
   && cat /meta.yaml \
    | sed -n '/^requirements:/,/^test:/p' \
    | sed -e "s/.*- //" \
    | sed -e "s/menuinst.*//" \
    | sed -e "s/.*://" > reqs.txt \
-  && conda install -n mssenv --file reqs.txt \
-  && conda install -n mssenv --file https://raw.githubusercontent.com/Open-MSS/MSS/${BRANCH}/requirements.d/development.txt \
-  && conda install -n mssenv pyvirtualdisplay \
+  && conda install mamba \
+  && mamba install --file reqs.txt \
+  && mamba install --file https://raw.githubusercontent.com/Open-MSS/MSS/${BRANCH}/requirements.d/development.txt \
+  && mamba install pyvirtualdisplay \
   && conda clean --all \
   && rm reqs.txt
