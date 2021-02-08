@@ -59,7 +59,6 @@ RUN apt-get --yes update && DEBIAN_FRONTEND=noninteractive \
 RUN conda config --add channels conda-forge && conda config --add channels defaults &&\
   conda update -n base -c defaults conda
 
-
 # create some desktop user directories
 # if there is no data attached e.g. demodata /srv/mss is the preferred dir
 RUN mkdir -p /root/.local/share/applications/ \
@@ -76,7 +75,8 @@ RUN wget https://github.com/Open-MSS/MSS/archive/develop.tar.gz \
   && sed -i "s@path: ../@git_url: https://github.com/Open-MSS/MSS.git\n  git_tag: develop@" /localbuild/meta.yaml \
   && rm develop.tar.gz \
   && conda build /localbuild \
-  && conda create -n mssenv mss=alpha --use-local \
+  && conda install mamba \
+  && mamba create -n mssenv mss=alpha --use-local \
   && conda build purge-all \
   && conda clean --all
 
