@@ -30,6 +30,8 @@ jobs:
           apt-get update &&
           apt-get install xvfb -y &&
           mamba install pyvirtualdisplay &&
+          conda deactivate &&
+          source /opt/conda/bin/activate mssenv &&
           [ -d "~/.cache/matplotlib" ] && rm -r ~/.cache/matplotlib/ ;
           pytest mslib"
           
