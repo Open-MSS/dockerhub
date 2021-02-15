@@ -70,6 +70,7 @@ RUN conda install conda-build -y
 
 # fetch localbuild from mss branch develop, build and install mss, cleanup
 RUN wget https://github.com/Open-MSS/MSS/archive/develop.tar.gz \
+  && conda update python \
   && mkdir /localbuild \
   && tar -C /localbuild --strip-components=2 -xvf develop.tar.gz MSS-develop/localbuild \
   && sed -i "s@path: ../@git_url: https://github.com/Open-MSS/MSS.git\n  git_tag: develop@" /localbuild/meta.yaml \
