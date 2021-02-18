@@ -5,7 +5,7 @@ on:
  workflow_dispatch:
 
 env:
-  IMAGE_PATH: ${{ secrets.DOCKERHUB_ACCOUNT }}
+  IMAGE_PATH: openmss
   IMAGE_NAME: mss
 
 jobs:
