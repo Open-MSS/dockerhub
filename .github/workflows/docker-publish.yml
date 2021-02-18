@@ -6,7 +6,7 @@ on:
 
 env:
   IMAGE_NAME: mss-test
-  IMAGE_PATH: ${{ secrets.DOCKERHUB_ACCOUNT }}
+  IMAGE_PATH: openmss
   
 jobs:     
   test-and-publish-testing:
