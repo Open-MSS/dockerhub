@@ -34,6 +34,7 @@ RUN conda create -n mssenv python=3 \
 # Install requirements, fetched from the specified branch
 RUN conda activate mssenv \
   && wget -O /meta.yaml -q https://raw.githubusercontent.com/Open-MSS/MSS/${BRANCH}/localbuild/meta.yaml \
+  && wget -O /development.txt -q https://raw.githubusercontent.com/Open-MSS/MSS/${BRANCH}/requirements.d/development.txt \
   && cat /meta.yaml \
    | sed -n '/^requirements:/,/^test:/p' \
    | sed -e "s/.*- //" \
@@ -41,7 +42,7 @@ RUN conda activate mssenv \
    | sed -e "s/.*://" > reqs.txt \
   && conda install mamba \
   && mamba install --file reqs.txt \
-  && mamba install --file https://raw.githubusercontent.com/Open-MSS/MSS/${BRANCH}/requirements.d/development.txt \
+  && mamba install --file /development.txt \
   && mamba install pyvirtualdisplay \
   && conda clean --all \
   && rm reqs.txt
