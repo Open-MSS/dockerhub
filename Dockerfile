@@ -68,7 +68,7 @@ RUN mkdir -p /root/.local/share/applications/ \
 
 # Install Mission Support System Software
 RUN conda install mamba \
-  && mamba create -n mssenv mss=2.0.0=py39hf3d152e_2 -y
+  && mamba create -n mssenv mss -y
 ENV PATH=/opt/conda/envs/mssenv/bin:$PATH
 
 # path for data and mss_wms_settings config
