@@ -1,15 +1,15 @@
 ##################################################################################
 # Dockerfile to run Memcached Containers
 # Based on miniconda3 Image
-# docker image build -t yourmss/mss:x.y.z .
-# docker container run --net=host --name mswms yourmss/develop mswms --port 80
-# docker container run --net=host --name mscolab yourmss/develop mscolab start
-# docker run  --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix yourmss/develop bash
+# docker image build -t openmss/mss:x.y.z .
+# docker container run --net=host --name mswms openmss/mss:x.y.z mswms --port 80
+# docker container run --net=host --name mscolab openmss/mss:x.y.z mscolab start
+# docker run  --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix openmss/mss:x.y.z bash
 # xhost +local:docker
 # docker container run -d --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix \
-# --name mss yourmss/develop mss
+# --name mss openmss/mss:x.y.z mss
 # runs mswms with demodata, mscolab and the msui
-# docker run   --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix yourmss/develop MSS
+# docker run   --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix openmss/mss:x,y,z MSS
 # docker exec replace_by_container /bin/sh -c "/scripts/script.sh"
 #
 # --- Read Capabilities ---
@@ -21,13 +21,13 @@
 # CONTAINER ID        IMAGE          COMMAND                  CREATED             STATUS          NAMES
 # 8c3ee656736e        mss:x.y.z     "/opt/conda/envs/mss…"   45 seconds ago      Up 43 seconds   mss
 # b1f1ea480ebc        mss:x.y.z     "/opt/conda/envs/mss…"    4 minutes ago      Up 4 minutes    mscolab
-# 1fecac3fd2d7        mss:x.y.z      "/opt/conda/envs/mss…"   5 minutes ago       Up 5 minutes    mswms
+# 1fecac3fd2d7        mss:x.y.z     "/opt/conda/envs/mss…"   5 minutes ago       Up 5 minutes    mswms
 #
-# --- from the dockerhub ---
+# --- from dockerhub ---
 # For the mss ui:
 # xhost +local:docker
 # docker run -d --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix \
-# yourmss/develop mss
+# openmss/mss mss
 #
 #
 ##################################################################################
@@ -56,7 +56,7 @@ RUN apt-get --yes update && DEBIAN_FRONTEND=noninteractive \
   && rm -rf /var/lib/apt/lists/*
 
 # Set up conda-forge channel
-RUN conda config --add channels conda-forge && conda config --add channels defaults &&\
+RUN conda config --add channels conda-forge &&\
   conda update -n base -c defaults conda
 
 # create some desktop user directories
