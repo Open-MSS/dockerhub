@@ -24,7 +24,7 @@ RUN echo "deb http://ftp.us.debian.org/debian testing main contrib non-free" >> 
   && apt-get clean all
 
 # Set up conda-forge channel
-RUN conda config --add channels conda-forge && conda config --add channels defaults &&\
+RUN conda config --add channels conda-forge &&\
   conda update -n base -c defaults conda
 
 # Create environment
