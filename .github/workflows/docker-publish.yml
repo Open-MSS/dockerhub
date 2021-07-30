@@ -34,7 +34,11 @@ jobs:
           conda deactivate &&
           source /opt/conda/bin/activate mssenv &&
           [ -d "~/.cache/matplotlib" ] && rm -r ~/.cache/matplotlib/ ;
-          pytest mslib"
+          pytest mslib \
+          || (for i in {1..5} \
+            ; do pytest mslib --last-failed --lfnf=none \
+            && break \
+          ; done)"
           
       - name: Print conda list
         if: ${{ always() }}
