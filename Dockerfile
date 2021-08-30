@@ -42,7 +42,8 @@ SHELL ["/bin/bash", "--login", "-c"]
 MAINTAINER Reimar Bauer <rb.proj@gmail.com>
 
 # install packages for qt X
-RUN apt-get --yes update && apt-get --yes upgrade && apt-get --yes install \
+RUN echo "deb http://ftp.us.debian.org/debian stable main contrib non-free" >> /etc/apt/sources.list \
+  && apt-get update --yes && apt-get --yes upgrade && apt-get --yes install \
   libgl1-mesa-glx \
   libx11-xcb1 \
   libxi6 \
