@@ -17,7 +17,7 @@ RUN apt-get --yes update && apt-get --yes upgrade && apt-get --yes install \
   xfonts-scalable
 
 # update git to latest version, and install xvfb
-RUN echo "deb http://ftp.us.debian.org/debian testing main contrib non-free" >> /etc/apt/sources.list \
+RUN echo "deb http://ftp.us.debian.org/debian stable main contrib non-free" >> /etc/apt/sources.list \
   && apt-get update \
   && apt-get install -y git \
   && apt-get install -y xvfb \
