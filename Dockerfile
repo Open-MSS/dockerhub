@@ -21,6 +21,7 @@ RUN echo "deb http://ftp.us.debian.org/debian stable main contrib non-free" >> /
   && apt-get update \
   && apt-get install -y git \
   && apt-get install -y xvfb \
+  && apt-get install -y netbase \
   && apt-get clean all
 
 # Set up conda-forge channel
