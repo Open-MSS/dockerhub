@@ -47,7 +47,8 @@ RUN echo "deb http://ftp.us.debian.org/debian stable main contrib non-free" >> /
   libgl1-mesa-glx \
   libx11-xcb1 \
   libxi6 \
-  xfonts-scalable
+  xfonts-scalable \
+  netbase
 
 # get keyboard working for mss gui
 RUN apt-get --yes update && DEBIAN_FRONTEND=noninteractive \
