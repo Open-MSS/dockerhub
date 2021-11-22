@@ -42,7 +42,7 @@ SHELL ["/bin/bash", "--login", "-c"]
 MAINTAINER Reimar Bauer <rb.proj@gmail.com>
 
 # install packages for qt X
-RUN echo "deb http://ftp.us.debian.org/debian stable main contrib non-free" >> /etc/apt/sources.list \
+RUN echo "http://archive.ubuntu.com/ubuntu/ focal-updates focal main restricted" >> /etc/apt/sources.list \
   && apt-get update --yes && apt-get --yes upgrade && apt-get --yes install \
   libgl1-mesa-glx \
   libx11-xcb1 \
