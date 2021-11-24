@@ -1,5 +1,5 @@
-# Set the base image debian with miniconda
-FROM continuumio/miniconda3
+# Set the base image ubuntu with mamba
+FROM condaforge/mambaforge
 
 # Sets which branch to fetch requirements from
 ARG BRANCH=develop
@@ -41,7 +41,6 @@ RUN conda activate mssenv \
    | sed -e "s/.*- //" \
    | sed -e "s/menuinst.*//" \
    | sed -e "s/.*://" > reqs.txt \
-  && conda install mamba \
   && mamba install --file reqs.txt \
   && mamba install --file /development.txt \
   && mamba install pyvirtualdisplay \
