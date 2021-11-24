@@ -33,7 +33,7 @@
 ##################################################################################
 
 
-# Set the base image debian with mamba
+# Set the base image ubuntu with mamba
 FROM condaforge/mambaforge
 
 # Make RUN commands use `bash --login`:
