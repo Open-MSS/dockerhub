@@ -1,15 +1,15 @@
 ##################################################################################
 # Dockerfile to run Memcached Containers
-# Based on miniconda3 Image
-# docker image build -t yourmss/mss:x.y.z .
-# docker container run --net=host --name mswms yourmss/mss:2.0.0 mswms --port 80
-# docker container run --net=host --name mscolab yourmss/mss:2.0.0 mscolab start
-# docker run  --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix yourmss/mss:2.0.0 bash
+# Based on mambaforge Image
+# docker image build -t openmss/mss:x.y.z .
+# docker container run --net=host --name mswms openmss/stable mswms --port 80
+# docker container run --net=host --name mscolab openmss/stable mscolab start
+# docker run  --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix openmss/stable bash
 # xhost +local:docker
 # docker container run -d --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix \
-# --name mss yourmss/mss:2.0.0 mss
+# --name mss openmss/stable mss
 # runs mswms with demodata, mscolab and the msui
-# docker run   --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix yourmss/mss:2.0.0 MSS
+# docker run   --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix openmss/stable MSS
 # docker exec replace_by_container /bin/sh -c "/scripts/script.sh"
 #
 # --- Read Capabilities ---
@@ -19,22 +19,22 @@
 #
 # docker ps
 # CONTAINER ID        IMAGE          COMMAND                  CREATED             STATUS          NAMES
-# 8c3ee656736e        mss:2.0.0     "/opt/conda/envs/mss…"   45 seconds ago      Up 43 seconds   mss
-# b1f1ea480ebc        mss:2.0.0     "/opt/conda/envs/mss…"    4 minutes ago      Up 4 minutes    mscolab
-# 1fecac3fd2d7        mss:2.0.0     "/opt/conda/envs/mss…"   5 minutes ago       Up 5 minutes    mswms
+# 8c3ee656736e        mss     "/opt/conda/envs/mss…"   45 seconds ago      Up 43 seconds   mss
+# b1f1ea480ebc        mss     "/opt/conda/envs/mss…"    4 minutes ago      Up 4 minutes    mscolab
+# 1fecac3fd2d7        mss     "/opt/conda/envs/mss…"   5 minutes ago       Up 5 minutes    mswms
 #
 # --- from the dockerhub ---
 # For the mss ui:
 # xhost +local:docker
 # docker run -d --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix \
-# yourmss/mss:2.0.0 mss
+# openmss/stable mss
 #
 #
 ##################################################################################
 
 
-# Set the base image debian with miniconda
-FROM continuumio/miniconda3
+# Set the base image ubuntu with mamba
+FROM condaforge/mambaforge
 
 # Make RUN commands use `bash --login`:
 SHELL ["/bin/bash", "--login", "-c"]
@@ -42,8 +42,7 @@ SHELL ["/bin/bash", "--login", "-c"]
 MAINTAINER Reimar Bauer <rb.proj@gmail.com>
 
 # install packages for qt X
-RUN echo "deb http://ftp.us.debian.org/debian stable main contrib non-free" >> /etc/apt/sources.list \
-  && apt-get update --yes && apt-get --yes upgrade && apt-get --yes install \
+RUN apt-get update --yes && apt-get --yes upgrade && apt-get --yes install \
   libgl1-mesa-glx \
   libx11-xcb1 \
   libxi6 \
@@ -69,8 +68,7 @@ RUN mkdir -p /root/.local/share/applications/ \
   && mkdir /srv/mss
 
 # Install Mission Support System Software
-RUN conda install mamba \
-  && mamba create -n mssenv mss -y
+RUN mamba create -n mssenv mss -y
 ENV PATH=/opt/conda/envs/mssenv/bin:$PATH
 
 # path for data and mss_wms_settings config
