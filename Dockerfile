@@ -33,8 +33,8 @@
 ##################################################################################
 
 
-# Set the base image debian with miniconda
-FROM continuumio/miniconda3
+# Set the base image ubuntu with mamba
+FROM condaforge/mambaforge
 
 # Make RUN commands use `bash --login`:
 SHELL ["/bin/bash", "--login", "-c"]
@@ -78,7 +78,6 @@ RUN wget https://github.com/Open-MSS/MSS/archive/develop.tar.gz \
   && sed -i "s@path: ../@git_url: https://github.com/Open-MSS/MSS.git\n  git_tag: develop@" /localbuild/meta.yaml \
   && rm develop.tar.gz \
   && conda build /localbuild \
-  && conda install mamba \
   && mamba create -n mssenv mss=alpha --use-local \
   && conda build purge-all \
   && conda clean --all
