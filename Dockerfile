@@ -24,7 +24,7 @@ RUN  apt-get --yes update \
 
 # Set up conda-forge channel
 RUN  conda config --add channels conda-forge \
-  && conda update -n base -c defaults conda
+  && conda config --set channel_priority strict
 
 # Create environment
 RUN conda create -n mssenv python=3.9 \
