@@ -19,6 +19,21 @@ jobs:
         run: |
           docker build . --tag $IMAGE_PATH/$IMAGE_NAME:latest
         
+
+      - name: Test image
+        timeout-minutes: 25
+        run: |
+          docker run $IMAGE_PATH/$IMAGE_NAME:latest /bin/bash -c "
+          git clone https://github.com/Open-MSS/MSS.git &&
+          cd MSS &&
+          git checkout develop &&
+          source /opt/conda/bin/activate mssenv &&
+          pytest mslib \
+          || (for i in {1..5} \
+            ; do pytest mslib --last-failed --lfnf=none \
+            && break \
+          ; done)"
+
       - name: Slack Notify
         if: ${{ failure() }}
         run: |
