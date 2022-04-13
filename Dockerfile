@@ -13,6 +13,7 @@ MAINTAINER Reimar Bauer <rb.proj@gmail.com>
 RUN  apt-get --yes update \
   && apt-get --yes upgrade \
   && apt-get --yes install \
+      apt-utils \
       libgl1-mesa-glx \
       libx11-xcb1 \
       libxi6 \
