@@ -1,7 +1,7 @@
 ##################################################################################
 # Dockerfile to run Memcached Containers
 # Based on mambaforge Image
-# docker image build -t openmss/mss:x.y.z .
+# docker image build -t openmss/mss .
 # docker container run --net=host --name mswms openmss/stable mswms --port 80
 # docker container run --net=host --name mscolab openmss/stable mscolab start
 # docker run  --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix openmss/stable bash
@@ -27,7 +27,7 @@
 # For the mss ui:
 # xhost +local:docker
 # docker run -d --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix \
-# openmss/stable mss
+# openmss/mss:x.y.z mss
 #
 #
 ##################################################################################
@@ -47,6 +47,7 @@ RUN apt-get update --yes && apt-get --yes upgrade && apt-get --yes install \
   libx11-xcb1 \
   libxi6 \
   xfonts-scalable \
+  x11-apps \
   netbase
 
 # get keyboard working for mss gui
@@ -55,10 +56,6 @@ RUN apt-get --yes update && DEBIAN_FRONTEND=noninteractive \
   && apt-get --yes upgrade \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
-
-# Set up conda-forge channel
-RUN conda config --add channels conda-forge && conda config --add channels defaults &&\
-  conda update -n base -c defaults conda
 
 
 # create some desktop user directories
