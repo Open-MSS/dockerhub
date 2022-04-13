@@ -1,5 +1,5 @@
-# Set the base image debian with miniconda
-FROM continuumio/miniconda3
+# Set the base image ubuntu with mamba
+FROM condaforge/mambaforge
 
 # Sets which branch to fetch requirements from
 ARG BRANCH=develop
@@ -17,31 +17,30 @@ RUN  apt-get --yes update \
       libx11-xcb1 \
       libxi6 \
       xfonts-scalable \
+      x11-apps \
+      netbase \
       git \
       xvfb \
-      netbase \
   && apt-get clean all
 
-# Set up conda-forge channel
-RUN  conda config --add channels conda-forge \
-  && conda config --set channel_priority strict
+ENV PATH=/opt/conda/envs/mssenv/bin:$PATH
 
-# Create environment
-RUN conda create -n mssenv python=3.9 \
-  && conda init bash
+# path for data and mss_wms_settings config
+ENV PYTHONPATH="/srv/mss:/root/mss"
+ENV PROJ_LIB="/opt/conda/envs/mssenv/share/proj"
 
 # Install requirements, fetched from the specified branch
-RUN conda activate mssenv \
-  && wget -O /meta.yaml -q https://raw.githubusercontent.com/Open-MSS/MSS/${BRANCH}/localbuild/meta.yaml \
+RUN wget -O /meta.yaml -q https://raw.githubusercontent.com/Open-MSS/MSS/${BRANCH}/localbuild/meta.yaml \
   && wget -O /development.txt -q https://raw.githubusercontent.com/Open-MSS/MSS/${BRANCH}/requirements.d/development.txt \
   && cat /meta.yaml \
    | sed -n '/^requirements:/,/^test:/p' \
    | sed -e "s/.*- //" \
    | sed -e "s/menuinst.*//" \
    | sed -e "s/.*://" > reqs.txt \
-  && conda install mamba \
-  && mamba install --file reqs.txt \
-  && mamba install --file /development.txt \
-  && mamba install pyvirtualdisplay \
+  && cat development.txt >> reqs.txt \
+  && echo pyvirtualdisplay >> reqs.txt \
+  && mamba create -y -n mssenv --file reqs.txt \
   && conda clean --all \
-  && rm reqs.txt
+  && rm reqs.txt 
+
+RUN mamba init bash
