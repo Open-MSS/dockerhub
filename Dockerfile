@@ -45,3 +45,5 @@ RUN wget -O /meta.yaml -q https://raw.githubusercontent.com/Open-MSS/MSS/${BRANC
   && rm reqs.txt 
 
 RUN mamba init bash
+ADD entrypoint.sh /usr/local/bin/docker-entrypoint
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint"]
