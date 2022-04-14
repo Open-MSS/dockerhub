@@ -28,7 +28,7 @@ jobs:
           cd MSS &&
           git checkout develop &&
           source /opt/conda/bin/activate mssenv &&
-          pytest mslib \
+          pytest mslib -k 'not browse_add_operation' \
           || (for i in {1..5} \
             ; do pytest mslib --last-failed --lfnf=none \
             && break \
