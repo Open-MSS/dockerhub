@@ -49,7 +49,7 @@ jobs:
         run: |
           docker run $IMAGE_PATH/$IMAGE_NAME:latest /bin/bash -c "
           source /opt/conda/bin/activate mssenv &&
-          conda list
+          mamba list
           "
 
       - name: Log into dockerhub
