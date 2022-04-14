@@ -43,6 +43,7 @@ MAINTAINER Reimar Bauer <rb.proj@gmail.com>
 
 # install packages for qt X
 RUN apt-get update --yes && apt-get --yes upgrade && apt-get --yes install \
+  apt-utils \
   libgl1-mesa-glx \
   libx11-xcb1 \
   libxi6 \
