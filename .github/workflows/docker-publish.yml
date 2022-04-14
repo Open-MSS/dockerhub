@@ -27,7 +27,6 @@ jobs:
           git checkout stable &&
           source /opt/conda/bin/activate mssenv &&
           mamba install --file requirements.d/development.txt &&
-          echo 'deb http://ftp.us.debian.org/debian testing main contrib non-free' >> /etc/apt/sources.list &&
           apt-get update &&
           apt-get install xvfb -y &&
           mamba install pyvirtualdisplay &&
