@@ -45,5 +45,10 @@ RUN wget -O /meta.yaml -q https://raw.githubusercontent.com/Open-MSS/MSS/${BRANC
   && rm reqs.txt 
 
 RUN mamba init bash
+# execute /etc/profile also in non-interactive use
+ENV BASH_ENV /etc/profile.d/conda.sh
+# default command to start when run
+CMD [ "/bin/bash", "--login" ]
+
 ADD entrypoint.sh /usr/local/bin/docker-entrypoint
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint"]
