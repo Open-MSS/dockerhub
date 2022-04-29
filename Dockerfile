@@ -42,12 +42,13 @@ SHELL ["/bin/bash", "--login", "-c"]
 MAINTAINER Reimar Bauer <rb.proj@gmail.com>
 
 # install packages for qt X
-RUN echo "deb http://ftp.us.debian.org/debian stable main contrib non-free" >> /etc/apt/sources.list \
-  && apt-get update --yes && apt-get --yes upgrade && apt-get --yes install \
+RUN apt-get update --yes && apt-get --yes upgrade && apt-get --yes install \
+  apt-utils \
   libgl1-mesa-glx \
   libx11-xcb1 \
   libxi6 \
   xfonts-scalable \
+  x11-apps \
   netbase
 
 # get keyboard working for mss gui
@@ -56,10 +57,6 @@ RUN apt-get --yes update && DEBIAN_FRONTEND=noninteractive \
   && apt-get --yes upgrade \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
-
-# Set up conda-forge channel
-RUN conda config --add channels conda-forge &&\
-  conda update -n base -c defaults conda
 
 # create some desktop user directories
 # if there is no data attached e.g. demodata /srv/mss is the preferred dir
@@ -72,7 +69,7 @@ RUN conda install conda-build -y
 
 # fetch localbuild from mss branch develop, build and install mss, cleanup
 RUN wget https://github.com/Open-MSS/MSS/archive/develop.tar.gz \
-  && conda update python \
+  && mamba update python=3.9.12 \
   && mkdir /localbuild \
   && tar -C /localbuild --strip-components=2 -xvf develop.tar.gz MSS-develop/localbuild \
   && sed -i "s@path: ../@git_url: https://github.com/Open-MSS/MSS.git\n  git_tag: develop@" /localbuild/meta.yaml \
