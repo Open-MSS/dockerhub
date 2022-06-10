@@ -27,7 +27,6 @@ jobs:
           git checkout stable &&
           source /opt/conda/bin/activate mssenv &&
           mamba install --file requirements.d/development.txt &&
-          mamba update dnspython &&
           apt-get update &&
           apt-get install xvfb -y &&
           mamba install pyvirtualdisplay &&
