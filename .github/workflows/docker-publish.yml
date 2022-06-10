@@ -34,7 +34,7 @@ jobs:
           conda deactivate &&
           source /opt/conda/bin/activate mssenv &&
           [ -d "~/.cache/matplotlib" ] && rm -r ~/.cache/matplotlib/ ;
-          pytest mslib -k "not test_permission_filter"\
+          pytest mslib -k "not test_mscolab"\
           || (for i in {1..5} \
             ; do pytest mslib --last-failed --lfnf=none \
             && break \
