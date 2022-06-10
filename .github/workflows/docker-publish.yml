@@ -28,6 +28,8 @@ jobs:
           source /opt/conda/bin/activate mssenv &&
           mamba install --file requirements.d/development.txt &&
           apt-get update &&
+          apt-get install dialog apt-utils -y &&
+          echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections &&
           apt-get install xvfb -y &&
           mamba install pyvirtualdisplay &&
           conda deactivate &&
