@@ -19,7 +19,7 @@ jobs:
         run: docker build . --tag $IMAGE_PATH/$IMAGE_NAME:latest
         
       - name: Test image
-        timeout-minutes: 25
+        timeout-minutes: 45
         run: |
           docker run $IMAGE_PATH/$IMAGE_NAME:latest /bin/bash -c "
           git clone https://github.com/Open-MSS/MSS.git &&
