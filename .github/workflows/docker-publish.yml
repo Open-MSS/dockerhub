@@ -27,6 +27,7 @@ jobs:
           git checkout stable &&
           source /opt/conda/bin/activate mssenv &&
           mamba install --file requirements.d/development.txt &&
+          mamba update dnspython &&
           apt-get update &&
           apt-get install xvfb -y &&
           mamba install pyvirtualdisplay &&
@@ -49,7 +50,7 @@ jobs:
         run: |
           docker run $IMAGE_PATH/$IMAGE_NAME:latest /bin/bash -c "
           source /opt/conda/bin/activate mssenv &&
-          conda list
+          mamba list
           "
 
       - name: Log into dockerhub
