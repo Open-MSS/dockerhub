@@ -1,37 +1,17 @@
 ##################################################################################
 # Dockerfile to run Memcached Containers
-# Based on miniconda3 Image
-# docker image build -t openmss/mss:x.y.z .
-# docker container run --net=host --name mswms openmss/mss:x.y.z mswms --port 80
-# docker container run --net=host --name mscolab openmss/mss:x.y.z mscolab start
-# docker run  --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix openmss/mss:x.y.z bash
+# Based on mambaforge Image
+# docker image build -t openmss/mss .
 # xhost +local:docker
-# docker container run -d --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix \
-# --name mss openmss/mss:x.y.z mss
 # runs mswms with demodata, mscolab and the msui
-# docker run   --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix openmss/mss:x,y,z MSS
-# docker exec replace_by_container /bin/sh -c "/scripts/script.sh"
+# docker run   --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix openmss/mss  MSS
 #
 # --- Read Capabilities ---
 # curl "http://localhost:8081/?service=WMS&request=GetCapabilities&version=1.1.1"
 # --- Verify Mscolab ---
 # curl "http://localhost:8083/status"
 #
-# docker ps
-# CONTAINER ID        IMAGE          COMMAND                  CREATED             STATUS          NAMES
-# 8c3ee656736e        mss:x.y.z     "/opt/conda/envs/mss…"   45 seconds ago      Up 43 seconds   mss
-# b1f1ea480ebc        mss:x.y.z     "/opt/conda/envs/mss…"    4 minutes ago      Up 4 minutes    mscolab
-# 1fecac3fd2d7        mss:x.y.z     "/opt/conda/envs/mss…"   5 minutes ago       Up 5 minutes    mswms
-#
-# --- from dockerhub ---
-# For the mss ui:
-# xhost +local:docker
-# docker run -d --net=host -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix \
-# openmss/mss mss
-#
-#
 ##################################################################################
-
 
 # Set the base image ubuntu with mamba
 FROM condaforge/mambaforge
@@ -41,22 +21,24 @@ SHELL ["/bin/bash", "--login", "-c"]
 
 MAINTAINER Reimar Bauer <rb.proj@gmail.com>
 
-# install packages for qt X
-RUN apt-get update --yes && apt-get --yes upgrade && apt-get --yes install \
-  apt-utils \
-  libgl1-mesa-glx \
-  libx11-xcb1 \
-  libxi6 \
-  xfonts-scalable \
-  x11-apps \
-  netbase
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Berlin
 
-# get keyboard working for mss gui
-RUN apt-get --yes update && DEBIAN_FRONTEND=noninteractive \
-  apt-get --yes install xserver-xorg-video-dummy \
-  && apt-get --yes upgrade \
-  && apt-get clean \
+# install packages for qt X
+RUN  apt-get -yqq update --fix-missing \
+  && apt-get -yqq upgrade \
+  && apt-get -yqq install \
+      apt-utils \
+      libgl1-mesa-glx \
+      libx11-xcb1 \
+      libxi6 \
+      xserver-xorg-video-dummy \
+      xfonts-scalable \
+      x11-apps \
+      netbase \
+  && apt-get -yqq clean all \
   && rm -rf /var/lib/apt/lists/*
+
 
 # create some desktop user directories
 # if there is no data attached e.g. demodata /srv/mss is the preferred dir
@@ -69,7 +51,7 @@ RUN conda install conda-build -y
 
 # fetch localbuild from mss branch develop, build and install mss, cleanup
 RUN wget https://github.com/Open-MSS/MSS/archive/develop.tar.gz \
-  && mamba update python=3.9.12 \
+  && mamba update python \
   && mkdir /localbuild \
   && tar -C /localbuild --strip-components=2 -xvf develop.tar.gz MSS-develop/localbuild \
   && sed -i "s@path: ../@git_url: https://github.com/Open-MSS/MSS.git\n  git_tag: develop@" /localbuild/meta.yaml \
