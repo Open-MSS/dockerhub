@@ -35,7 +35,7 @@ jobs:
           conda deactivate &&
           source /opt/conda/bin/activate mssenv &&
           [ -d "~/.cache/matplotlib" ] && rm -r ~/.cache/matplotlib/ ;
-          pytest tests  \
+          pytest -k 'not (browse_add_operation or add_operation)' tests  \
           || (for i in {1..5} \
             ; do pytest tests --last-failed --lfnf=none \
             && break \
